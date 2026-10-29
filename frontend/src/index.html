@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Festival flash sale</title>
+<meta name="description" content="500 units, one per customer. Fair, fast and duplicate-proof checkout.">
+<!--INLINE_CSS-->
+<!--PRELOAD-->
+</head>
+<body data-state="LOADING">
+<main>
+  <p class="kicker">Festival flash sale</p>
+  <h1 id="name">Loading…</h1>
+  <p class="price" id="price"></p>
+
+  <div class="clockwrap">
+    <p class="clock-label" id="clock-label">Opens in</p>
+    <p class="clock" id="clock" aria-live="off">--:--</p>
+  </div>
+
+  <div class="meter" role="presentation"><div id="meter-bar"></div></div>
+  <p class="meter-text" id="meter-text"></p>
+
+  <section class="panel" aria-live="polite" aria-atomic="true">
+    <p class="status" id="status">Loading the sale…</p>
+    <p class="detail" id="detail"></p>
+    <div class="actions">
+      <button id="buy" type="button" disabled>Loading…</button>
+      <button id="alt" class="secondary" type="button" hidden>Cancel reservation</button>
+    </div>
+  </section>
+</main>
+<!--SCRIPT-->
+</body>
+</html>

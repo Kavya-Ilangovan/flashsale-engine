@@ -1,0 +1,100 @@
+x-backend-env: &backend-env
+  REDIS_URL: redis://redis:6379/0
+  DATABASE_URL: postgresql://flash:flash@postgres:5432/flash
+  AMQP_URL: amqp://guest:guest@rabbitmq:5672/
+  SESSION_SECRET: ${SESSION_SECRET:-change-me-in-real-deployments}
+  PRODUCT_ID: "42"
+  TOTAL_STOCK: ${TOTAL_STOCK:-500}
+  SALE_START_DELAY_SEC: ${SALE_START_DELAY_SEC:-45}
+  RESERVATION_TTL_MS: ${RESERVATION_TTL_MS:-600000}
+  LAUNCH_JITTER_MS: ${LAUNCH_JITTER_MS:-0}
+  RATE_USER_PER_SEC: ${RATE_USER_PER_SEC:-5}
+  RATE_IP_PER_SEC: ${RATE_IP_PER_SEC:-50}
+  ADMISSION_PER_SEC_PER_REPLICA: ${ADMISSION_PER_SEC_PER_REPLICA:-0}
+  WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-8}
+
+x-api: &api
+  build: { context: ./backend }
+  profiles: [app]
+  environment: *backend-env
+  depends_on:
+    init: { condition: service_completed_successfully }
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:3000/readyz', timeout=2)"]
+    interval: 5s
+    timeout: 3s
+    retries: 10
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: flash, POSTGRES_PASSWORD: flash, POSTGRES_DB: flash }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U flash"], interval: 3s, timeout: 3s, retries: 20 }
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    ports: ["6379:6379"]
+    volumes: [./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro, redisdata:/data]
+    healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 3s, timeout: 3s, retries: 20 }
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports: ["5672:5672", "15672:15672"]
+    healthcheck: { test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"], interval: 5s, timeout: 10s, retries: 20 }
+
+  init:
+    build: { context: ./backend }
+    profiles: [app]
+    command: ["python", "-m", "flashsale.bootstrap"]
+    environment: *backend-env
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    restart: "no"
+
+  api1:
+    <<: *api
+    command: ["uvicorn", "flashsale.api:app", "--host", "0.0.0.0", "--port", "3000", "--no-access-log", "--timeout-keep-alive", "65"]
+  api2:
+    <<: *api
+    command: ["uvicorn", "flashsale.api:app", "--host", "0.0.0.0", "--port", "3000", "--no-access-log", "--timeout-keep-alive", "65"]
+  api3:
+    <<: *api
+    command: ["uvicorn", "flashsale.api:app", "--host", "0.0.0.0", "--port", "3000", "--no-access-log", "--timeout-keep-alive", "65"]
+
+  relay:
+    build: { context: ./backend }
+    profiles: [app]
+    command: ["python", "-m", "flashsale.relay"]
+    environment: *backend-env
+    depends_on: { init: { condition: service_completed_successfully } }
+    restart: unless-stopped
+
+  worker1: &worker
+    build: { context: ./backend }
+    profiles: [app]
+    command: ["python", "-m", "flashsale.worker"]
+    environment: *backend-env
+    depends_on: { init: { condition: service_completed_successfully } }
+    restart: unless-stopped
+  worker2:
+    <<: *worker
+
+  gateway:
+    build: { context: ., dockerfile: gateway/Dockerfile }
+    profiles: [app]
+    ports: ["8080:80"]
+    depends_on:
+      api1: { condition: service_healthy }
+      api2: { condition: service_healthy }
+      api3: { condition: service_healthy }
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:

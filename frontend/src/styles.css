@@ -1,0 +1,41 @@
+:root {
+  --ink: #1d1a4a; --ink-2: #4a4778; --paper: #f3f2fa; --card: #ffffff; --line: #dcdaf0;
+  --gold: #ffb400; --gold-ink: #2b1d00; --bad: #b3174f; --good: #12704f;
+  color-scheme: light dark;
+  font-family: "Avenir Next", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #f1efff; --ink-2: #b4b1dc; --paper: #14122e; --card: #1d1a44; --line: #34306a; --gold-ink: #231700; --bad: #ff7aa6; --good: #5fd6a4; }
+}
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  margin: 0; min-height: 100%; background: var(--paper); color: var(--ink);
+  padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+  display: flex; justify-content: center; align-items: flex-start;
+}
+main { width: 100%; max-width: 30rem; }
+.kicker { margin: 0.5rem 0 1.5rem; color: var(--ink-2); font-size: 0.95rem; }
+h1 { margin: 0; font-size: clamp(1.6rem, 6vw, 2.1rem); line-height: 1.15; font-weight: 750; letter-spacing: -0.01em; }
+.price { margin: 0.25rem 0 0; color: var(--ink-2); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.clockwrap { margin: 2.25rem 0 1.5rem; }
+.clock-label { margin: 0; color: var(--ink-2); font-size: 0.95rem; }
+.clock { margin: 0; font-size: clamp(3.4rem, 17vw, 5.6rem); line-height: 1; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.meter { height: 0.5rem; border-radius: 0.5rem; background: var(--line); overflow: hidden; }
+.meter > div { height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(1); transition: transform 0.6s ease; }
+.meter-text { margin: 0.5rem 0 0; color: var(--ink-2); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.panel { margin-top: 1.75rem; padding: 1.1rem 1.2rem; background: var(--card); border: 1px solid var(--line); border-radius: 0.9rem; min-height: 5.5rem; }
+.status { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.detail { margin: 0.35rem 0 0; color: var(--ink-2); line-height: 1.5; max-width: 60ch; }
+body[data-state="SOLD_OUT"] .status, body[data-state="FAILED"] .status, body[data-state="EXPIRED"] .status, body[data-state="RETRYABLE_ERROR"] .status { color: var(--bad); }
+body[data-state="CONFIRMED"] .status { color: var(--good); }
+.actions { display: grid; gap: 0.6rem; margin-top: 1rem; }
+button {
+  font: inherit; font-weight: 700; padding: 0.95rem 1.2rem; border-radius: 0.75rem; border: 2px solid var(--ink);
+  background: var(--gold); color: var(--gold-ink); cursor: pointer; min-height: 3.25rem;
+}
+button.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .meter > div { transition: none; } }

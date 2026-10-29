@@ -1,0 +1,16 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "numberOfRuns": 3,
+      "settings": { "preset": "desktop", "throttlingMethod": "simulate" }
+    },
+    "assert": {
+      "assertions": {
+        "interactive": ["error", { "maxNumericValue": 1500 }],
+        "total-byte-weight": ["error", { "maxNumericValue": 204800 }],
+        "categories:performance": ["warn", { "minScore": 0.9 }]
+      }
+    }
+  }
+}
