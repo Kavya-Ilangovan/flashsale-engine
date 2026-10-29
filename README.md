@@ -59,8 +59,7 @@ k6 run -e BASE=http://localhost:8080 loadtest/k6-flash-sale.js
 ## Documentation
 
 | Document | Purpose |
-|---|---
-|
+|---|---|
 | [`docs/SOLUTION_DESIGN.md`](docs/SOLUTION_DESIGN.md) | Problem analysis, frontend, backend and database design, verification, traceability |
 | [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | Configuration, deployment, runbook, monitoring, security |
 | [`docs/evidence/`](docs/evidence) | Captured output of the executed tests and benchmark |
