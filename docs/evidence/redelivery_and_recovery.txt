@@ -1,0 +1,9 @@
+Duplicate delivery (python -m tools.redeliver after a completed sale)
+  before: available_stock=2 active_orders=1 total_orders=5
+  redelivered 5 events
+  after:  available_stock=2 active_orders=1 total_orders=5
+  worker_events_total{outcome="DUPLICATE"} 5
+
+Redis state loss (DEL {p42}:stock while the sale data exists in PostgreSQL)
+  reconciler: "rebuilt Redis state from PostgreSQL"
+  {p42}:stock restored to 2 (= available_stock in PostgreSQL)

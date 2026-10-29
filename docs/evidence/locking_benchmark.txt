@@ -1,0 +1,9 @@
+buyers=2000 stock=500 db_pool=50
+
+strategy                                      sold  oversold  time(s)  db buyers  statements  retries  gave up
+--------------------------------------------------------------------------------------------------------------
+1. SELECT then UPDATE (legacy)                 545        45     0.91       2000        3090        0        0
+2. Pessimistic (FOR UPDATE)                    500         0     1.96       2000        3000        0        0
+3. Optimistic (version check)                  500         0     2.88       2000       22117     9651      185
+4. Conditional atomic UPDATE                   500         0     1.23       2000        2500        0        0
+5. Redis atomic gate + conditional UPDATE      500         0     1.52        500        1000        0        0

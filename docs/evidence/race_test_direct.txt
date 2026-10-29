@@ -1,0 +1,16 @@
+stock=500 available=500 users=3000
+waiting 25.3s for the sale to start
+9000 requests in 40.34s (223 req/s)
+  202 PAYMENT_PENDING         304
+  202 PROCESSING              517
+  409 ALREADY_RESERVED        679
+  409 SOLD_OUT                7500
+PASS  distinct reservations <= stock (500/500)
+PASS  stock fully allocated under excess demand
+PASS  every user holds at most one ticket
+PASS  no 5xx or network errors
+postgres: {'total_stock': 500, 'available_stock': 0, 'active': 500, 'dup': 0}
+PASS  PostgreSQL active orders == accepted reservations (500 vs 500)
+PASS  PostgreSQL active orders <= stock
+PASS  available_stock == total_stock - active
+PASS  no user holds two active orders

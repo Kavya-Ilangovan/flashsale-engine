@@ -1,0 +1,7 @@
+initial  assets/main-Y2REYABG.js                 7197 B raw   2889 B gzip
+lazy     assets/chunk-checkout-XPHIARM6.js       1741 B raw    941 B gzip
+lazy     assets/chunk-chunk-QNC2F6PN.js           584 B raw    396 B gzip
+initial transfer (html+css+js, gzip): 4.4 KB | with lazy chunks: 5.8 KB | budget 200 KB
+# tests 5
+# pass 5
+# fail 0

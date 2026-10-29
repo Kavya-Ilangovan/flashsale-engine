@@ -1,0 +1,13 @@
+PASS  three users reserve the three units
+PASS  fourth user is told sold out
+PASS  payment success confirms
+PASS  repeated payment is idempotent
+PASS  payment failure releases
+PASS  failed order cannot be confirmed
+PASS  another user cannot read the order
+PASS  released unit is re-sold
+PASS  no additional unit appears
+waiting for the unpaid reservation to expire
+PASS  unpaid reservation expires
+PASS  late payment cannot confirm a released unit {'code': 'NOT_PAYABLE', 'status': 'EXPIRED'}
+PASS  expired unit becomes available again
